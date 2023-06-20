@@ -3,7 +3,7 @@ import registerLarabergBlocks from "./register-blocks";
 
 import DatasetInspectorComponent from "./blocks/DatasetInspectorComponent";
 
-const { dispatch, select } = Laraberg.wordpress.data;
+const {dispatch, select} = Laraberg.wordpress.data;
 
 // Custom Category
 export function registerCategory(title, slug) {
@@ -19,7 +19,7 @@ export function registerCategory(title, slug) {
 }
 
 function addAttribute(settings) {
-    console.log({ settings });
+    console.log({settings});
     settings.attributes = {
         ...settings.attributes,
         customDatasetAttrs: {
@@ -39,7 +39,7 @@ function addSaveProps(extraProps, blockType, attributes) {
 
 const withInspectorControl = DatasetInspectorComponent;
 
-const { addFilter } = Laraberg.wordpress.hooks;
+const {addFilter} = Laraberg.wordpress.hooks;
 addFilter(
     "blocks.registerBlockType",
     "core/custom-dataset/attribute",
@@ -58,14 +58,27 @@ addFilter(
     withInspectorControl
 );
 
-import { parse } from '@wordpress/block-serialization-default-parser';
+import {parse} from '@wordpress/block-serialization-default-parser';
 
 window.parseWpHtml = parse
 
 registerCategory("Test", "test");
-
+var homeUrl = window.location.origin;
 // registerLarabergBlocks
 registerLarabergBlocks();
-
+const mediaUpload = ({filesList, onFileChange}) => {
+    setTimeout(() => {
+        const uploadedFiles = Array.from(filesList).map(file => {
+            return {
+                id: file.name,
+                name: file.name,
+                url: `${homeUrl}/photos/${file.name}`
+            }
+        })
+        onFileChange(uploadedFiles)
+    }, 1000)
+}
 // Initializing Laraberg
-Laraberg.init("post_content", {});
+Laraberg.init("post_content", {
+    mediaUpload: mediaUpload
+});
